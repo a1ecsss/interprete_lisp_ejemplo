@@ -1,0 +1,19 @@
+# Ignorar archivos de compilación de Java
+*.class
+
+# Ignorar archivos generados por el IDE
+*.log
+*.out
+*.jar
+
+# Ignorar archivos de configuración de IntelliJ IDEA
+.idea/
+*.iml
+
+# Ignorar archivos de configuración de Eclipse
+.classpath
+.project
+.settings/
+
+# Ignorar archivos de configuración de VS Code
+.vscode/
