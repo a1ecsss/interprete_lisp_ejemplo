@@ -193,8 +193,9 @@ public class EntradaSalida implements ISExpression {
                 throw new IllegalArgumentException("IOError: Expected a single character for ~C but got -> " + valor);
     
             case "~S":  // Evaluar y mostrar su representación exacta en Lisp
-                Object resultadoEvaluado = ejecutador.ejecutarExpresion(valor);
-                return resultadoEvaluado.toString();
+                //System.out.println("EN S: "+ valor);
+                //Object resultadoEvaluado = ejecutador.ejecutarExpresion(valor);
+                return valor.toString();
     
             case "~%":  // Salto de línea
                 return "\n";

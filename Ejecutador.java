@@ -27,6 +27,10 @@ public class Ejecutador {
         if (!ISExpression.isAtom(expresion)) {
             return ejecutarExpresionLista((List<Object>) expresion);
         }
+
+        if (ISExpression.isNil(expresion)) {return null;}
+        if (ISExpression.isT(expresion)){return "T";}
+        
         if (expresion instanceof String) {
             String strExp = (String) expresion;
             // Si es un string con comillas al inicio y al final, eliminarlas y se retorna
@@ -50,9 +54,8 @@ public class Ejecutador {
     }
     
     private Object ejecutarExpresionLista(List<Object> expresion) {
-        if (expresion == null || expresion.isEmpty()) {
-            return null;
-        }
+        if (expresion.isEmpty() || ISExpression.isNil(expresion)) {return null;}
+        if (ISExpression.isT(expresion)){return "T";}
 
         Object operador = expresion.get(0);
 

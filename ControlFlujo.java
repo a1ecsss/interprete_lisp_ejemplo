@@ -49,13 +49,25 @@ public class ControlFlujo implements ISExpression {
                         throw new IllegalArgumentException("ControlFlowError: 'cond' expects at least a condition and an expression -> " + expresion);
                     }
                     Object cond = par.get(0);
+                    //System.out.println("PAR: "+par);
+                    //System.out.println("cond: "+cond+" equals: "+"t".equals(cond));
                     if("t".equals(cond)){
-
-                        return ejecutador.ejecutarExpresion(par.get(1));
+                        Object resultado = null;
+                        for(Object proceso : par.subList(1, par.size())){
+                            resultado = ejecutador.ejecutarExpresion(proceso);
+                        }
+                        //System.out.println("PAR en la 1: "+par.get(1));
+                        return resultado;
                     }
                     cond = ejecutador.ejecutarExpresion(cond);
                     if (cond != null) {
-                        return ejecutador.ejecutarExpresion(par.get(1));
+                        Object resultado = null;
+                        for(Object proceso : par.subList(1, par.size())){
+                            resultado = ejecutador.ejecutarExpresion(proceso);
+                        }
+                        //System.out.println("PAR en la 1: "+par.get(1));
+                        return resultado;
+                        //return ejecutador.ejecutarExpresion(par.get(1));
                     }
                 }
                 return null;
@@ -86,13 +98,28 @@ public class ControlFlujo implements ISExpression {
                     if (!ISExpression.isAtom(caso)) {  // Soporte para varios valores en un solo caso (case1 case2 case3)
                         for (Object opcion : (List<?>) caso) {
                             if (valor.equals(ejecutador.ejecutarExpresion(opcion))) {
-                                return ejecutador.ejecutarExpresion(par.get(1));
+                                Object resultado = null;
+                                for(Object proceso : par.subList(1, par.size())){
+                                    resultado = ejecutador.ejecutarExpresion(proceso);
+                                }
+                                return resultado;
+                                //return ejecutador.ejecutarExpresion(par.get(1));
                             }
                         }
                     } else if (caso.equals("otherwise")) {  // Caso por defecto
-                        return ejecutador.ejecutarExpresion(par.get(1));
+                        Object resultado = null;
+                        for(Object proceso : par.subList(1, par.size())){
+                            resultado = ejecutador.ejecutarExpresion(proceso);
+                        }
+                        return resultado;
+                        //return ejecutador.ejecutarExpresion(par.get(1));
                     } else if (valor.equals(ejecutador.ejecutarExpresion(caso))) {  // Coincidencia exacta
-                        return ejecutador.ejecutarExpresion(par.get(1));
+                        Object resultado = null;
+                        for(Object proceso : par.subList(1, par.size())){
+                            resultado = ejecutador.ejecutarExpresion(proceso);
+                        }
+                        return resultado;
+                        //return ejecutador.ejecutarExpresion(par.get(1));
                     }
                 }
             
