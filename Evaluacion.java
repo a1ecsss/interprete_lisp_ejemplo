@@ -1,7 +1,7 @@
 import java.util.List;
 
 public class Evaluacion implements ISExpression {
-    private static final List<String> SExpressions = List.of("quote", "eval", "'","atom","numberp","evenp","oddp","min","max");
+    private static final List<String> SExpressions = List.of("quote", "eval", "'","atom","numberp","evenp","oddp","min","max", "progn");
     private final Ejecutador ejecutador;
 
     public Evaluacion(Ejecutador ejecutador) {
@@ -67,8 +67,13 @@ public class Evaluacion implements ISExpression {
                     throw new IllegalArgumentException("EvaluationError: 'max' expects exactly two argument -> " + expresion);
                 }
                 return ISExpression.min(ejecutador.ejecutarExpresion(expresion.get(1)), ejecutador.ejecutarExpresion(expresion.get(2))); // Evalúa el contenido
-            
-
+            case "progn":
+                Object resultado = null;
+                // Comenzamos desde el índice 1 en lugar de 0
+                for (int i = 1; i < expresion.size(); i++) {
+                    resultado = ejecutador.ejecutarExpresion(expresion.get(i));
+                }
+                return resultado;
             default:
                 throw new RuntimeException("OperatorError: Unknown evaluation operator -> " + operador);
         }

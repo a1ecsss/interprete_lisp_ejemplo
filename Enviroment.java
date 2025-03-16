@@ -1,8 +1,8 @@
 import java.util.*;
 
 class Environment {
-    public Object codigo;
-    private Map<String, Object> variables;
+    public List<Object> codigo;
+    public Map<String, Object> variables;
     private Map<String, Defun> funciones;
     private Ejecutador ejecutador;
 
@@ -14,11 +14,14 @@ class Environment {
         this.ejecutador = new Ejecutador(this);
         Defun defun = new Defun(codigo, parameters);
         this.funciones.put(name, defun); // Se referencia a sí misma en funciones
-        
     }
 
     public Object ejecutarCodigo() {
-        return this.ejecutador.ejecutarExpresion(codigo);
+        Object resultado = null;
+        for (int i = 0; i < codigo.size(); i++) {
+            resultado = this.ejecutador.ejecutarExpresion(codigo.get(i));
+        }
+        return resultado;
     }
     
     public Object getCodigo() {

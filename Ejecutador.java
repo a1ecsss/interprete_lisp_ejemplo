@@ -37,43 +37,22 @@ public class Ejecutador {
             if (strExp.startsWith("\"") && strExp.endsWith("\"") && strExp.length() > 1) {
                 return strExp.substring(1, strExp.length() - 1);
             }
-            // Si la variable es una función, la ejecutamosF
-            if (environment.getFunciones().containsKey(expresion)) {
-                //System.out.println("se ejecuto lo que crei que no se iba a ejecutar nunca");
-                return ejecutarFuncion((String) expresion, List.of());
-            }
-            // Si la expresion no es el nombre de una funcion, intentamos ver si es una variable
-            Object variableValor = environment.getVariable((String) expresion);
-            if (variableValor == null) {
-                throw new RuntimeException("VariableError: Variable '" + expresion + "' is undefined or parameters were not provided");
-            }
-            return variableValor;
+            return environment.getVariable((String) expresion);
         }
         // Se retorna la expresion si no cumple con lo anterior
         return expresion;
     }
     
     private Object ejecutarExpresionLista(List<Object> expresion) {
-        if (expresion.isEmpty() || ISExpression.isNil(expresion)) {return null;}
-        if (ISExpression.isT(expresion)){return "T";}
+        if (expresion.isEmpty()) {
+            throw new IllegalArgumentException("SyntaxError: Attempt to call an empty list as a function." );
+        }
 
         Object operador = expresion.get(0);
 
-        //Si el operador es una lista entonces hay varias instrucciones, se ejecutan todas y se retorna el valor de la ultima
-        if (!ISExpression.isAtom(operador)){
-            return this.ejecutarBloque(expresion);
-        }
         // Si no es un string, error de sintaxis
         if (!(operador instanceof String)) {
             throw new IllegalArgumentException("SyntaxError: Invalid operator -> " + operador + " in expression " + expresion);
-        }
-        //Si es un string y esta encerrado en comillas se retorna el valor sin sus comillas
-        if ((operador instanceof String)) {
-            String strExp = (String) operador;
-            // Si es un string con comillas al inicio y al final, eliminarlas y se retorna
-            if (strExp.startsWith("\"") && strExp.endsWith("\"") && strExp.length() > 1) {
-                return strExp.substring(1, strExp.length() - 1);
-            }
         }
         
         // Verificar si es una función definida y ejecutarla
@@ -127,16 +106,6 @@ public class Ejecutador {
 
         return newFunction.ejecutarCodigo();
     }
-
-
-
-    //funcion para ejecutar varios bloques de instrucciones
-    public Object ejecutarBloque(List<Object> codigo) {
-        Object resultado = null;
-        for (Object expresion : codigo) {
-            resultado = ejecutarExpresion(expresion);
-        }
-        return resultado;
-    }
+    
     
 }

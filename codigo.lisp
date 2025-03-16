@@ -2,14 +2,14 @@
 (defun hanoi (n a b c)
   (if (= n 1)
       (format t "Mover de ~A a ~A ~%" a c )  ;; Imprime el movimiento cuando queda un solo disco
-      ((hanoi (- n 1) a c b)  ;; Mueve n-1 discos de A a B usando C como auxiliar
+      (progn (hanoi (- n 1) a c b)  ;; Mueve n-1 discos de A a B usando C como auxiliar
         (hanoi 1 a b c)        ;; Mueve el disco más grande de A a C
         (hanoi (- n 1) b a c)))) ;; Mueve los n-1 discos de B a C usando A como auxiliar
 
 ;; Llamada de prueba con 3 discos
 (write "Ingrese la cantidad de discos: ")
 (hanoi (read) "Torre 1" "Torre 2" "Torre 3")
-
+(print "")
 ;; Definir una función recursiva para calcular la suma de los primeros n números
 (defun suma-recursiva (n)
   (if (<= n 0)
@@ -47,8 +47,8 @@
    (format t "¿El número es mayor a 10? ~A~%" es-mayor)
    (format t "¿El número es par? ~A~%" es-par))
 )
-
-(setq edad 19)
+(print "")
+(setq edad 119)
 
 (case edad
   (16 
@@ -65,5 +65,6 @@
     (print "También eres oficialmente un adulto en muchos países."))
 
   (otherwise 
-    (print "Edad no relevante.")))
+    (print "Edad no relevante.")
+    (print nil)))
 

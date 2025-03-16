@@ -53,8 +53,7 @@ public class EntradaSalida implements ISExpression {
         Object resultado = null;
 
         for (int i = 1; i < expresion.size(); i++) {
-            resultado = ejecutador.ejecutarExpresion(expresion.get(i));
-            resultado = (resultado == null) ? "NIL" : resultado;
+            resultado = this.toStringNil(ejecutador.ejecutarExpresion(expresion.get(i)));
             resultadoFinal.append(resultado).append(" ");
         }
 
@@ -68,9 +67,8 @@ public class EntradaSalida implements ISExpression {
         }
 
         Object resultado = ejecutador.ejecutarExpresion(expresion.get(1));
-        resultado = (resultado == null) ? "NIL" : resultado;
 
-        System.out.print(resultado);  // Sin salto de línea
+        System.out.print(this.toStringNil(resultado));  // Sin salto de línea
         return resultado;
     }
 
@@ -164,7 +162,7 @@ public class EntradaSalida implements ISExpression {
             case "~A":  // Cualquier tipo convertido a String sin `String.format()`
                 return (anchoMinimo > 0) 
                     ? String.format("%" + anchoMinimo + "s", valor.toString())
-                    : valor.toString();
+                    : this.toStringNil(valor);
     
             case "~D":  // Números enteros con ancho mínimo
                 if (valor instanceof Number) {
@@ -186,7 +184,7 @@ public class EntradaSalida implements ISExpression {
     
             case "~C":  // Carácter
                 if (valor instanceof Character) {
-                    return valor.toString();
+                    return this.toStringNil(valor);
                 } else if (valor instanceof String && ((String) valor).length() == 1) {
                     return (String) valor;
                 }
@@ -195,7 +193,7 @@ public class EntradaSalida implements ISExpression {
             case "~S":  // Evaluar y mostrar su representación exacta en Lisp
                 //System.out.println("EN S: "+ valor);
                 //Object resultadoEvaluado = ejecutador.ejecutarExpresion(valor);
-                return valor.toString();
+                return this.toStringNil(valor);
     
             case "~%":  // Salto de línea
                 return "\n";
@@ -206,6 +204,10 @@ public class EntradaSalida implements ISExpression {
             default:
                 throw new IllegalArgumentException("IOError: Unsupported format code -> " + codigo);
         }
+    }
+    
+    String toStringNil(Object valor) {
+        return (valor != null) ? valor.toString() : "NIL";
     }
     
 
