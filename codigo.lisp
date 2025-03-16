@@ -66,5 +66,7 @@
 
   (otherwise 
     (print "Edad no relevante.")
-    (print nil)))
+    (print nil)
+    (print t)))
 
+(setq t 1)

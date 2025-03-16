@@ -1,8 +1,8 @@
 import java.util.*;
 
 class Environment {
-    public List<Object> codigo;
-    public Map<String, Object> variables;
+    private List<Object> codigo;
+    private Map<String, Object> variables;
     private Map<String, Defun> funciones;
     private Ejecutador ejecutador;
 
@@ -14,6 +14,8 @@ class Environment {
         this.ejecutador = new Ejecutador(this);
         Defun defun = new Defun(codigo, parameters);
         this.funciones.put(name, defun); // Se referencia a sí misma en funciones
+        this.variables.put("nil", null);
+        this.variables.put("t", "T");
     }
 
     public Object ejecutarCodigo() {
@@ -38,14 +40,16 @@ class Environment {
     }
 
     public void setVariable(String nombre, Object valor) {
-        variables.put(nombre, valor);
+        if("nil".equals(nombre.toLowerCase())){throw new RuntimeException("Error: Attempt to set constant symbol -> NIL");}
+        if("t".equals(nombre.toLowerCase())){ throw new RuntimeException("Error: Attempt to set constant symbol -> T");}
+        variables.put(nombre.toLowerCase(), valor);
     }
 
     public Object getVariable(String nombre) {
-        if (!variables.containsKey(nombre)) {
+        if (!variables.containsKey(nombre.toLowerCase())) {
             throw new RuntimeException("VariableError: Undefined variable -> " + nombre);
         }
-        return variables.get(nombre);
+        return variables.get(nombre.toLowerCase());
     }
 
     public void modificarEstructura(List<Object> lista, Object operador, Object nuevoValor) {

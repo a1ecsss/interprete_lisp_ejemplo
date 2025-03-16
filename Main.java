@@ -10,9 +10,8 @@ public class Main {
             List<Object> codigo = Lector.getCodigo(rutaArchivo);
             //System.out.println("Lista anidada generada: " + codigo);
             Environment MainEnviroment = new Environment(codigo, "Main", null);
-            MainEnviroment.ejecutarCodigo();
             try{
-                
+                MainEnviroment.ejecutarCodigo();
             }catch (Exception e){
                 System.err.println(e.getMessage());
             }

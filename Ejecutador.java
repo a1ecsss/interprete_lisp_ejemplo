@@ -27,9 +27,6 @@ public class Ejecutador {
         if (!ISExpression.isAtom(expresion)) {
             return ejecutarExpresionLista((List<Object>) expresion);
         }
-
-        if (ISExpression.isNil(expresion)) {return null;}
-        if (ISExpression.isT(expresion)){return "T";}
         
         if (expresion instanceof String) {
             String strExp = (String) expresion;
