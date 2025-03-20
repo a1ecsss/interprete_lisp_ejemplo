@@ -1,21 +1,20 @@
 import java.util.*;
 
 class Environment {
+    public Environment parentEnviroment;
     private List<Object> codigo;
     private Map<String, Object> variables;
     private Map<String, Defun> funciones;
     private Ejecutador ejecutador;
 
-    public Environment(List<Object> codigo, String name, Object parameters) {
+    public Environment(List<Object> codigo, Object parameters, Environment parentEnviroment) {
         this.codigo = codigo;
-        //System.out.println("CODIGO: " + codigo);
         this.variables = new HashMap<>();
         this.funciones = new HashMap<>();
         this.ejecutador = new Ejecutador(this);
-        Defun defun = new Defun(codigo, parameters);
-        this.funciones.put(name, defun); // Se referencia a sí misma en funciones
         this.variables.put("nil", null);
         this.variables.put("t", "T");
+        this.parentEnviroment = parentEnviroment;
     }
 
     public Object ejecutarCodigo() {
@@ -25,31 +24,54 @@ class Environment {
         }
         return resultado;
     }
-    
+
     public Object getCodigo() {
         return codigo;
     }
     
 
     public Map<String, Object> getVariables() {
-        return variables;
+        return this.variables;  
     }
 
     public Map<String, Defun> getFunciones() {
-        return funciones;
+        return this.funciones;  
     }
 
+    public void setFuncion(String nombre, Defun defun){
+        funciones.put(nombre.toLowerCase(), defun);
+    }
+    
+
     public void setVariable(String nombre, Object valor) {
-        if("nil".equals(nombre.toLowerCase())){throw new RuntimeException("Error: Attempt to set constant symbol -> NIL");}
-        if("t".equals(nombre.toLowerCase())){ throw new RuntimeException("Error: Attempt to set constant symbol -> T");}
+        if("nil".equalsIgnoreCase(nombre) || "t".equalsIgnoreCase(nombre)){
+            throw new RuntimeException("Error: Attempt to set constant symbol -> "+nombre);
+        }
         variables.put(nombre.toLowerCase(), valor);
     }
 
     public Object getVariable(String nombre) {
-        if (!variables.containsKey(nombre.toLowerCase())) {
-            throw new RuntimeException("VariableError: Undefined variable -> " + nombre);
+        Environment env = this;
+        while (env != null) {
+            Map<String, Object> vars = env.getVariables();
+            if (vars.containsKey(nombre.toLowerCase())) {
+                return vars.get(nombre.toLowerCase());
+            }
+            env = env.parentEnviroment;
         }
-        return variables.get(nombre.toLowerCase());
+        throw new RuntimeException("VariableError: Undefined variable -> " + nombre);
+    }
+
+    public Defun getFuncion(String nombre) {
+        Environment env = this;
+        while (env != null) {
+            Map<String, Defun> funs = env.getFunciones();
+            if (funs.containsKey(nombre.toLowerCase())) {
+                return funs.get(nombre.toLowerCase());
+            }
+            env = env.parentEnviroment;
+        }
+        throw new RuntimeException("DefunError: Undefined defun -> " + nombre);
     }
 
     public void modificarEstructura(List<Object> lista, Object operador, Object nuevoValor) {

@@ -19,40 +19,40 @@ public class Aritmetica implements ISExpression {
         if (expresion.size() < 3) {
             throw new IllegalArgumentException("ArithmeticError: Invalid arithmetic expression -> " + expresion);
         }
-        
         String operador = (String) expresion.get(0);
-        Object operando1 = expresion.get(1);
-        Object operando2 = expresion.get(2);
-        
-        // Evaluar si los operandos son listas y ejecutarlas recursivamente
-        operando1 = ejecutador.ejecutarExpresion(operando1);
-        operando2 = ejecutador.ejecutarExpresion(operando2);
-
-        // Validar si son null antes de convertir
-        if (operando1 == null || operando2 == null) {
-            throw new RuntimeException("TypeError: Null value found in arithmetic expression -> " + expresion);
+        double resultado = this.checkNum(expresion, 1);
+        for (int i = 2; i < expresion.size(); i++) {
+            double num = this.checkNum(expresion, i);
+            switch (operador) {
+                case "+" -> resultado = resultado + num;
+                case "-" -> resultado = resultado - num;
+                case "*" -> resultado = resultado * num;
+                case "/" -> {
+                    if (num == 0) throw new ArithmeticException("ZeroDivisionError: Division by zero");
+                    resultado = resultado / num;
+                }
+                case "mod" -> resultado = resultado % num;
+                case "expt" -> resultado = Math.pow(resultado, num);
+                default -> throw new RuntimeException("OperatorError: Unknown arithmetic operator -> " + operador);
+            };
+            
         }
-
-        // Convertir los operandos a números
-        double num1, num2;
-        try {
-            num1 = Double.parseDouble(operando1.toString());
-            num2 = Double.parseDouble(operando2.toString());
-        } catch (NumberFormatException e) {
-            throw new RuntimeException("TypeError: Expected numbers but got -> " + operando1 + ", " + operando2);
-        }
-        
-        return switch (operador) {
-            case "+" -> num1 + num2;
-            case "-" -> num1 - num2;
-            case "*" -> num1 * num2;
-            case "/" -> {
-                if (num2 == 0) throw new ArithmeticException("ZeroDivisionError: Division by zero");
-                yield num1 / num2;
-            }
-            case "mod" -> num1 % num2;
-            case "expt" -> Math.pow(num1, num2);
-            default -> throw new RuntimeException("OperatorError: Unknown arithmetic operator -> " + operador);
-        };
+        return resultado;
     }
+
+    private double checkNum(List<Object> expresion, int index){
+        Object operando = ejecutador.ejecutarExpresion(expresion.get(index));
+        // Validar si son null antes de convertir
+        if (operando == null) {
+            throw new RuntimeException("TypeError: NIL value found in arithmetic expression -> " + expresion);
+        }
+        double resultado;
+        try {
+            resultado = Double.parseDouble(operando.toString());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("TypeError: Expected numbers but got -> " + expresion.get(1) + " in arithmetic expression -> " + expresion);
+        }
+        return resultado;
+    }
+
 }

@@ -36,7 +36,7 @@ public class Funciones implements ISExpression {
                 if (ISExpression.isAtom(parameters)) {
                     throw new IllegalArgumentException("FunctionError: Function parameters must be a list -> " + parameters);
                 }
-                
+                    
                 /* 
                 Environment nuevoEntorno = new Environment((List<Object>) cuerpo, (String) nombreFuncion);
                 for (Object variable : (List<Object>) parametros) {
@@ -45,7 +45,7 @@ public class Funciones implements ISExpression {
                 */    
                 //System.out.println("sublist: "+expresion.subList(2, expresion.size()));
                 Defun defun = new Defun(expresion.subList(3, expresion.size()), parameters);
-                ejecutador.environment.getFunciones().put((String) nombreFuncion, defun);
+                ejecutador.environment.setFuncion((String) nombreFuncion, defun);
 
                 return nombreFuncion;
             

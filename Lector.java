@@ -38,17 +38,24 @@ public class Lector {
     }
 
     private static List<Object> parsearCodigo(String codigo) {
-        return parsearLista(new StringTokenizer(codigo, " ()\"'", true));
+        StringTokenizer tokens = new StringTokenizer(codigo, " ()\"'", true);
+        //while (tokens.hasMoreTokens()){
+        //    System.out.println("tokens: hasMoreTokens:"+tokens.nextToken());
+        //}
+        
+        return parsearLista(tokens);
     }
 
     private static List<Object> parsearLista(StringTokenizer listaAnidadas) {
         List<Object> lista = new ArrayList<>();
+        //System.out.println("lista" + lista);
         boolean enString = false;
         StringBuilder bufferString = new StringBuilder();
 
         while (listaAnidadas.hasMoreTokens()) {
+            
             String token = listaAnidadas.nextToken();
-
+            //System.out.println("TOKEN: "+token);
             if (token.equals("\"") && !enString) {
                 enString = true;
                 bufferString.setLength(0);
@@ -71,15 +78,20 @@ public class Lector {
 
             if (token.equals("'")) {
                 // Si encontramos un ', lo envolvemos en la siguiente lista
-                if (listaAnidadas.hasMoreTokens()) {
-                    String siguiente = listaAnidadas.nextToken().trim();
-                    if (siguiente.equals("(")) {
-                        List<Object> subLista = parsearLista(listaAnidadas);
-                        subLista.add(0, "'");  // Agregar ' como primer elemento
+                if (listaAnidadas.hasMoreTokens()) {//si hay un siguiente caracter
+                    String siguiente = listaAnidadas.nextToken().trim(); //agarramos el siguiente caracter
+                    if (siguiente.equals("(")) { 
+                        List<Object> subLista = new ArrayList<>();
+                        List<Object> subsubLista = parsearLista(listaAnidadas);
+                        //System.out.println("resultado del parseo: "+subLista);
+                        //subLista.add(0, "'");  // Agregar ' como primer elemento
+                        subLista.add(0,"'");
+                        subLista.add(1,subsubLista);
                         lista.add(subLista);
                     } else {
                         lista.add(List.of("'", parsearValor(siguiente)));
                     }
+                        
                 }
             } else if (token.equals("(")) {
                 lista.add(parsearLista(listaAnidadas));

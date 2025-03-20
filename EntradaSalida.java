@@ -94,10 +94,11 @@ public class EntradaSalida implements ISExpression {
         }
 
         Object destino = expresion.get(1);
+         
         if (!"t".equalsIgnoreCase(destino.toString()) && !"NIL".equalsIgnoreCase(destino.toString())) {
             throw new IllegalArgumentException("IOError: 'format' expects T, NIL, or a string as first argument -> " + destino);
         }
-
+        
         Object formatoBruto = ejecutador.ejecutarExpresion(expresion.get(2));
         if (!(formatoBruto instanceof String)) {
             throw new IllegalArgumentException("IOError: The format string must be a string -> " + formatoBruto);
@@ -106,7 +107,7 @@ public class EntradaSalida implements ISExpression {
         String formato = (String) formatoBruto;
         String resultado = procesarFormato(formato, expresion.subList(3, expresion.size()));
 
-        if ("T".equalsIgnoreCase(destino.toString())) {
+        if (destino != null) {
             System.out.print(resultado);  // No usa println porque `format` no siempre agrega salto de línea
         }
 

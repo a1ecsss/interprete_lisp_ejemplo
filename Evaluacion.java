@@ -31,7 +31,7 @@ public class Evaluacion implements ISExpression {
                 if (expresion.size() < 2) { // devuelve un error si la lista esta vacia '()
                     throw new IllegalArgumentException("EvaluationError: ' expects at least one argument -> " + expresion);
                 }
-                return expresion.subList(1,expresion.size()); // Devuelve el dato sin evaluarlo
+                return expresion.get(1); // Devuelve el dato sin evaluarlo
             case "eval":
                 if (expresion.size() != 2) {
                     throw new IllegalArgumentException("EvaluationError: 'eval' expects exactly one argument -> " + expresion);

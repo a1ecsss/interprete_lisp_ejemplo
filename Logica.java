@@ -20,7 +20,6 @@ public class Logica implements ISExpression {
         }
         
         String operador = (String) expresion.get(0);
-        
         // Operación NOT: Solo debe tener un operando
         if (operador.equals("not")) {
             if (expresion.size() != 2) {
@@ -30,24 +29,30 @@ public class Logica implements ISExpression {
             operando = ejecutador.ejecutarExpresion(operando);
             return (operando == null) ? 1 : null;
         }
-        
         // Operaciones AND y OR
         if (expresion.size() < 3) {
             throw new IllegalArgumentException("LogicError: Invalid number of arguments for logical operation -> " + expresion);
         }
-        
-        Object operando1 = expresion.get(1);
-        Object operando2 = expresion.get(2);
 
-        operando1 = ejecutador.ejecutarExpresion(operando1);
-        operando2 = ejecutador.ejecutarExpresion(operando2);
-
-        boolean resultado = switch (operador) {
-            case "and" -> (operando1 != null) && (operando2 != null);
-            case "or" -> (operando1 != null) || (operando2 != null);
-            default -> throw new RuntimeException("OperatorError: Unknown logical operator -> " + operador);
-        };
-        
-        return resultado ? 1 : null;
+        boolean resultado = true;
+        for (int i = 1; i < expresion.size(); i++) {
+            //resultado += expresion.get(i);
+            Object operando = expresion.get(i);
+            // Evaluar si los operandos son listas y ejecutarlas recursivamente
+            operando = ejecutador.ejecutarExpresion(operando);
+            switch (operador) {
+                case "and" -> resultado = resultado && (operando != null);
+                case "or" -> resultado = resultado || (operando != null);
+            };
+            if (!resultado){
+                return null;
+            }
+            if (operador.equals("or") && resultado) {
+                return "T";
+            }
+            
+        }
+        return "T";
     }
 }
+

@@ -21,12 +21,16 @@ public class Listas implements ISExpression {
         }
         // Se evalúa cada expresión antes de asignarlas a una lista
         String operador = (String) expresion.get(0);
+
         for (int i = 1; i < expresion.size(); i++) {
-            expresion.set(i, ejecutador.ejecutarExpresion(expresion.get(i)));
+            if(expresion.get(i) instanceof String){
+                expresion.set(i, ejecutador.ejecutarExpresion(expresion.get(i)));
+            }
+            
         }
         
         List<Object> args = expresion.subList(1, expresion.size());
-
+        Object evalList;
         switch (operador) {
             case "list":
                 return new ArrayList<>(args);  // Devuelve una lista con los elementos dados.
@@ -35,33 +39,56 @@ public class Listas implements ISExpression {
                 if (args.size() != 1 || ISExpression.isAtom(args.get(0)) == true) {
                     throw new IllegalArgumentException("ListError: 'car' expects a single list -> " + expresion);
                 }
-                List<?> carList = (List<?>) args.get(0);
+                evalList = ejecutador.ejecutarExpresion(args.get(0));
+                if (ISExpression.isAtom(evalList)) {
+                    throw new IllegalArgumentException("ListError: The value "+ evalList +" is not of type LIST");
+                }
+                List<?> carList = (List<?>) evalList;
                 return carList.isEmpty() ? null : carList.get(0);  // Devuelve el primer elemento.
 
             case "cdr":
                 if (args.size() != 1 || ISExpression.isAtom(args.get(0)) == true) {
                     throw new IllegalArgumentException("ListError: 'cdr' expects a single list -> " + expresion);
                 }
-                List<?> cdrList = (List<?>) args.get(0);
+                evalList = ejecutador.ejecutarExpresion(args.get(0));
+                if (ISExpression.isAtom(evalList)) {
+                    throw new IllegalArgumentException("ListError: The value "+ evalList +" is not of type LIST");
+                }
+                List<?> cdrList = (List<?>) evalList;
                 return cdrList.isEmpty() ? List.of() : new ArrayList<>(cdrList.subList(1, cdrList.size()));  // Devuelve la cola.
 
             case "cons":
                 if (args.size() != 2) {
                     throw new IllegalArgumentException("ListError: 'cons' expects exactly two arguments -> " + expresion);
                 }
-            
+
                 // Convertir ambos elementos en listas
-                List<Object> primerElemento = (ISExpression.isAtom(args.get(0)) == false)
-                    ? new ArrayList<>((List<?>) args.get(0))
-                    : new ArrayList<>(List.of(args.get(0)));
-            
-                List<?> segundoElemento = (ISExpression.isAtom(args.get(1)) == false)
-                    ? (List<?>) args.get(1)
-                    : List.of(args.get(1));
+                List<Object> primerElemento;
+                List<?> segundoElemento;
+                evalList = ejecutador.ejecutarExpresion(args.get(0));
+                /*
+                if (ISExpression.isAtom(evalList)) {
+                    throw new IllegalArgumentException("ListError: The value "+ evalList +" is not of type LIST");
+                }*/
+                if(!ISExpression.isAtom(args.get(0))){
+                    primerElemento = new ArrayList<>((List<?>) evalList);
+                }else{
+                    primerElemento = new ArrayList<>(List.of(evalList));
+                }
+
+                evalList = ejecutador.ejecutarExpresion(args.get(1));
+                /* 
+                if (ISExpression.isAtom(evalList)) {
+                    throw new IllegalArgumentException("ListError: The value "+ evalList +" is not of type LIST");
+                }*/
+                if(!ISExpression.isAtom(args.get(1))){
+                    segundoElemento = new ArrayList<>((List<?>) evalList);
+                }else{
+                    segundoElemento = new ArrayList<>(List.of(evalList));
+                }
             
                 // Concatenar las listas 
                 primerElemento.addAll(segundoElemento);
-                
                 return primerElemento;
             
             case "append":
@@ -70,7 +97,11 @@ public class Listas implements ISExpression {
                     if (ISExpression.isAtom(arg) == true) {
                         throw new IllegalArgumentException("ListError: 'append' expects only lists -> " + expresion);
                     }
-                    resultAppend.addAll((List<?>) arg);
+                    evalList = ejecutador.ejecutarExpresion(arg);
+                    if (ISExpression.isAtom(evalList)) {
+                        throw new IllegalArgumentException("ListError: The value "+ evalList +" is not of type LIST");
+                    }
+                    resultAppend.addAll((List<?>) evalList);
                 }
                 return resultAppend;  // Concatena las listas.
 
@@ -78,13 +109,21 @@ public class Listas implements ISExpression {
                 if (args.size() != 1 || ISExpression.isAtom(args.get(0)) == true) {
                     throw new IllegalArgumentException("ListError: 'length' expects a single list -> " + expresion);
                 }
-                return ((List<?>) args.get(0)).size();  // Devuelve la cantidad de elementos.
+                evalList = ejecutador.ejecutarExpresion(args.get(0));
+                if (ISExpression.isAtom(evalList)) {
+                    throw new IllegalArgumentException("ListError: The value "+ evalList +" is not of type LIST");
+                }
+                return ((List<?>) ejecutador.ejecutarExpresion(args.get(0))).size();  // Devuelve la cantidad de elementos.
 
             case "reverse":
                 if (args.size() != 1 || ISExpression.isAtom(args.get(0)) == true) {
                     throw new IllegalArgumentException("ListError: 'reverse' expects a single list -> " + expresion);
                 }
-                List<Object> reversedList = new ArrayList<>((List<?>) args.get(0));
+                evalList = ejecutador.ejecutarExpresion(args.get(0));
+                if (ISExpression.isAtom(evalList)) {
+                    throw new IllegalArgumentException("ListError: The value "+ evalList +" is not of type LIST");
+                }
+                List<Object> reversedList = new ArrayList<>((List<?>) evalList);
                 java.util.Collections.reverse(reversedList); // Invierte la lista.
                 return reversedList;  
 

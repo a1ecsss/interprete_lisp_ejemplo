@@ -51,6 +51,7 @@ public class ControlFlujo implements ISExpression {
                     Object cond = par.get(0);
                     //System.out.println("PAR: "+par);
                     //System.out.println("cond: "+cond+" equals: "+"t".equals(cond));
+                    /* 
                     if("t".equals(cond)){
                         Object resultado = null;
                         for(Object proceso : par.subList(1, par.size())){
@@ -59,6 +60,7 @@ public class ControlFlujo implements ISExpression {
                         //System.out.println("PAR en la 1: "+par.get(1));
                         return resultado;
                     }
+                    */
                     cond = ejecutador.ejecutarExpresion(cond);
                     if (cond != null) {
                         Object resultado = null;

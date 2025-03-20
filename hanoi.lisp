@@ -77,3 +77,30 @@
         (hanoi n 'A 'C 'B))))
 
 (solve-hanoi 4)
+
+
+
+(setq x 10)  ;; variable Entorno Global
+(defun fun1 ()
+  (print "X: " x))  ;; Aquí accedemos a 'x' del entorno global
+(fun1)
+
+(setq y 10)  ;; variable Entorno Global
+(setq z 10)
+(defun fun2 ()
+  ( defun fun3 () 
+      (print "Z: " z)
+    (setq y 20)  ;; Definimos una variable local 'x' con valor 20
+    (print "Y: " y)  ;; Esta 'x' es local a 'fun2'
+    (fun1)))  ;; Llamamos a fun1, que imprimirá el valor de 'x' en el entorno global
+
+;; Llamar a 'fun2'
+(fun2)  
+;; Esto imprimirá:
+;; Dentro de fun2, x es: 20
+;; Dentro de fun1, x es: 10
+;; (Esto muestra que dentro de 'fun2' 'x' es local, pero 'fun1' usa la 'x' global)
+
+;; Después de ejecutar 'fun2', la variable global 'x' sigue siendo 10
+(print "Valor global de x después de llamar a fun2: " x)
+;; Esto imprimirá: Valor global de x después de llamar a fun2: 10
